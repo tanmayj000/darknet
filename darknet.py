@@ -28,6 +28,10 @@ Windows Python 2.7 version: https://github.com/AlexeyAB/darknet/blob/fc496d52bf2
 """
 #pylint: disable=R, W0401, W0614, W0703
 from ctypes import *
+import matplotlib.pyplot as plt
+import cvlib as cv
+from PIL import Image
+import cv2
 import math
 import random
 import os
@@ -271,6 +275,7 @@ def detect_image(net, meta, im, thresh=.5, hier_thresh=.5, nms=.45, debug= False
     if debug: print("Assigned pnum")
     predict_image(net, im)
     letter_box = 0
+    
     #predict_image_letterbox(net, im)
     #letter_box = 1
     if debug: print("did prediction")
@@ -400,6 +405,7 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
     if not os.path.exists(imagePath):
         raise ValueError("Invalid image path `"+os.path.abspath(imagePath)+"`")
     # Do the detection
+    print("detect_image called")
     #detections = detect(netMain, metaMain, imagePath, thresh)	# if is used cv2.imread(image)
     detections = detect(netMain, metaMain, imagePath.encode("ascii"), thresh)
     if showImage:
@@ -492,6 +498,7 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
 def performBatchDetect(thresh= 0.25, configPath = "./cfg/yolov4.cfg", weightPath = "yolov4.weights", metaPath= "./cfg/coco.data", hier_thresh=.5, nms=.45, batch_size=3):
     import cv2
     import numpy as np
+    print("batch_detect_image called")
     # NB! Image sizes should be the same
     # You can change the images, yet, be sure that they have the same width and height
     img_samples = ['data/person.jpg', 'data/person.jpg', 'data/person.jpg']
