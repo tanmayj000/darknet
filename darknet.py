@@ -426,6 +426,37 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
                 # Coordinates are around the center
                 xCoord = int(bounds[0] - bounds[2]/2)
                 yCoord = int(bounds[1] - bounds[3]/2)
+
+                #changed ###########################################
+                font_scale=0.25
+                thickness = 2
+                red = (0,0,255)
+                green = (0,255,0)
+                blue = (255,0,0)
+                font=cv2.FONT_HERSHEY_SIMPLEX
+
+                x, y, w, h = bounds[0], bounds[1], xExtent, yExtent
+                detect_mask_img = image
+                detect_mask_img = detect_mask_img[y:y+h, x:x+w]
+                pil_image = Image.fromarray(detect_mask_img, mode = "RGB")
+                pil_image = train_transforms(pil_image)
+                img = pil_image.unsqueeze(0)
+                            
+                            
+                result = mask_model(img.cuda())
+                _, maximum = torch.max(result.data, 1)
+                prediction = maximum.item()
+
+                
+                if prediction == 0:
+                  cv2.putText(image, "No Mask", (x,y - 10), font, font_scale, red, thickness)
+                  boxColor = red
+                elif prediction == 1:
+                  cv2.putText(image, "Masked", (x,y - 10), font, font_scale, green, thickness)
+                  boxColor = green
+
+                ####################################################
+             
                 boundingBox = [
                     [xCoord, yCoord],
                     [xCoord, yCoord + yExtent],
@@ -438,7 +469,7 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
                 rr3, cc3 = draw.polygon_perimeter([x[1] - 1 for x in boundingBox], [x[0] for x in boundingBox], shape= shape)
                 rr4, cc4 = draw.polygon_perimeter([x[1] for x in boundingBox], [x[0] + 1 for x in boundingBox], shape= shape)
                 rr5, cc5 = draw.polygon_perimeter([x[1] for x in boundingBox], [x[0] - 1 for x in boundingBox], shape= shape)
-                boxColor = (int(255 * (1 - (confidence ** 2))), int(255 * (confidence ** 2)), 0)
+                #boxColor = (int(255 * (1 - (confidence ** 2))), int(255 * (confidence ** 2)), 0)
                 draw.set_color(image, (rr, cc), boxColor, alpha= 0.8)
                 draw.set_color(image, (rr2, cc2), boxColor, alpha= 0.8)
                 draw.set_color(image, (rr3, cc3), boxColor, alpha= 0.8)
