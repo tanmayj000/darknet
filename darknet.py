@@ -442,7 +442,7 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
                 pil_image = train_transforms(pil_image)
                 img = pil_image.unsqueeze(0)
                             
-                            
+                print("accessing mask model")            
                 result = mask_model(img.cuda())
                 _, maximum = torch.max(result.data, 1)
                 prediction = maximum.item()
@@ -450,9 +450,11 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
                 
                 if prediction == 0:
                   cv2.putText(image, "No Mask", (x,y - 10), font, font_scale, red, thickness)
+                  print("Mask")
                   boxColor = red
                 elif prediction == 1:
                   cv2.putText(image, "Masked", (x,y - 10), font, font_scale, green, thickness)
+                  print("No mask")
                   boxColor = green
 
                 ####################################################
