@@ -438,8 +438,9 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
     print("detect_image called")
     #detections = detect(netMain, metaMain, imagePath, thresh)	# if is used cv2.imread(image)
     detections = detect(netMain, metaMain, imagePath.encode("ascii"), thresh)
-    #############################
+    #################################
     load_mask_wt(mask_path)
+    mask_model.eval()
     #################################
     if showImage:
         try:
