@@ -348,7 +348,7 @@ netMain = None
 metaMain = None
 altNames = None
 
-def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yolov4.cfg", weightPath = "yolov4.weights", metaPath= "./cfg/coco.data", showImage= True, makeImageOnly = False, initOnly= False, label = 1, mask_path = '/content/drive/My Drive/equalaf4.pth'):
+def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yolov4.cfg", weightPath = "yolov4.weights", metaPath= "./cfg/coco.data", showImage= True, makeImageOnly = False, initOnly= False, label = True, mask_path = '/content/drive/My Drive/equalaf4.pth'):
     """
     Convenience function to handle the detection and returns of objects.
 
@@ -490,12 +490,12 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
 
                 
                 if prediction == 0:
-                  if(label==1):
+                  if label == True:
                     cv2.putText(image, "No Mask", (x,y - 10), font, font_scale, red, thickness)
                   print("No mask")
                   boxColor = red
                 elif prediction == 1:
-                  if(label==1):
+                  if label == True:
                     cv2.putText(image, "Masked", (x,y - 10), font, font_scale, green, thickness)
                   print("Mask")
                   boxColor = green
