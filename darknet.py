@@ -527,6 +527,7 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
                 draw.set_color(image, (rr4, cc4), boxColor, alpha= 0.8)
                 draw.set_color(image, (rr5, cc5), boxColor, alpha= 0.8)
             if not makeImageOnly:
+                io.imsave(fname="/content/drive/My Drive/result.jpg", arr=image)
                 io.imshow(image)
                 io.show()
             detections = {
