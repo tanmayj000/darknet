@@ -34,7 +34,38 @@ import cv2
 import math
 import random
 import os
+import numpy as np
+import torch
+import torch.nn.functional as F
+import torch.nn as nn
+import torch.optim as optim
+import torchvision.models as models
+import torchvision.transforms as transforms
+import torchvision.datasets as datasets
+from torch.utils.data import DataLoader
+import torch.utils.data as data
+import matplotlib.pyplot as plt
 
+mask_model = models.resnet50(pretrained=True)
+mask_model.fc = torch.nn.Sequential(torch.nn.Linear(2048, 1024),
+                                 torch.nn.BatchNorm1d(1024),
+                                 torch.nn.ReLU(),
+                                 torch.nn.Dropout(0.2),
+                                 torch.nn.Linear(1024, 512),
+                                 torch.nn.BatchNorm1d(512),
+                                 torch.nn.Dropout(0.6),
+                                 torch.nn.Linear(512, 2),
+                                 torch.nn.LogSoftmax(dim=1))
+
+train_transforms = transforms.Compose([
+    transforms.Resize((256, 256)),
+    transforms.ToTensor(),
+    transforms.Normalize((0.5,0.5,0.5), (0.5,0.5,0.5))
+    ])
+
+def load_mask_wt(path = '/content/drive/My Drive/equalaf4.pth'):
+    mask_model.load_state_dict(torch.load(path))
+    
 def sample(probs):
     s = sum(probs)
     probs = [a/s for a in probs]
@@ -317,7 +348,7 @@ netMain = None
 metaMain = None
 altNames = None
 
-def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yolov4.cfg", weightPath = "yolov4.weights", metaPath= "./cfg/coco.data", showImage= True, makeImageOnly = False, initOnly= False):
+def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yolov4.cfg", weightPath = "yolov4.weights", metaPath= "./cfg/coco.data", showImage= True, makeImageOnly = False, initOnly= False, mask_path = '/content/drive/My Drive/equalaf4.pth'):
     """
     Convenience function to handle the detection and returns of objects.
 
@@ -407,6 +438,9 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
     print("detect_image called")
     #detections = detect(netMain, metaMain, imagePath, thresh)	# if is used cv2.imread(image)
     detections = detect(netMain, metaMain, imagePath.encode("ascii"), thresh)
+    #############################
+    load_mask_wt(mask_path)
+    #################################
     if showImage:
         try:
             from skimage import io, draw
