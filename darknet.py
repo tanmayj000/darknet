@@ -440,7 +440,7 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
                 blue = (255,0,0)
                 font=cv2.FONT_HERSHEY_SIMPLEX
 
-                x, y, w, h = bounds[0], bounds[1], bounds[2], bounds[3]
+                x, y, w, h = int(bounds[0]), int(bounds[1]), int(bounds[2]), int(bounds[3])
                 print(x, y, w, h)
                 detect_mask_img = image
                 detect_mask_img = detect_mask_img[y:y+h, x:x+w]
