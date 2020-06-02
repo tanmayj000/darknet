@@ -427,11 +427,11 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
                 # y = shape[0]
                 # yExtent = int(y * bounds[3] / 100)
                 yExtent = int(bounds[3])
-                xEntent = int(bounds[2])
+                xExtent = int(bounds[2])
                 # Coordinates are around the center
                 xCoord = int(bounds[0] - bounds[2]/2)
                 yCoord = int(bounds[1] - bounds[3]/2)
-
+                
                 #changed ###########################################
                 font_scale=0.25
                 thickness = 2
@@ -440,7 +440,8 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
                 blue = (255,0,0)
                 font=cv2.FONT_HERSHEY_SIMPLEX
 
-                x, y, w, h = bounds[0], bounds[1], xExtent, yExtent
+                x, y, w, h = bounds[0], bounds[1], bounds[2], bounds[3]
+                print(x, y, w, h)
                 detect_mask_img = image
                 detect_mask_img = detect_mask_img[y:y+h, x:x+w]
                 pil_image = Image.fromarray(detect_mask_img, mode = "RGB")
