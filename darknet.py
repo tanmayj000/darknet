@@ -468,8 +468,8 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
                 yCoord = int(bounds[1] - bounds[3]/2)
                 
                 #changed ###########################################
-                font_scale=0.35
-                thickness = 0.5
+                font_scale = 0.35
+                thickness = 1
                 blue = (0,0,255)
                 green = (0,255,0)
                 red = (255,0,0)
