@@ -348,7 +348,7 @@ netMain = None
 metaMain = None
 altNames = None
 
-def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yolov4.cfg", weightPath = "yolov4.weights", metaPath= "./cfg/coco.data", showImage= True, makeImageOnly = False, initOnly= False, label = True, mask_path = '/content/drive/My Drive/equalaf4.pth'):
+def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yolov4.cfg", weightPath = "yolov4.weights", metaPath= "./cfg/coco.data", showImage= True, makeImageOnly = False, initOnly= False, mask_present_label = True, mask_path = '/content/drive/My Drive/equalaf4.pth'):
     """
     Convenience function to handle the detection and returns of objects.
 
@@ -490,19 +490,19 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
 
                 
                 if prediction == 0:
-                  if label == True:
+                  if mask_present_label == True:
                     cv2.putText(image, "No Mask", (x,y - 10), font, font_scale, red, thickness)
-                    print("Label print", label)
+                    print("Label print", mask_present_label)
                   else:
-                    print("Label print", label)
+                    print("Label print", mask_present_label)
                   print("No mask")
                   boxColor = red
                 elif prediction == 1:
-                  if label == True:
+                  if mask_present_label == True:
                     cv2.putText(image, "Masked", (x,y - 10), font, font_scale, green, thickness)
-                    print("Label print", label)
+                    print("Label print", mask_present_label)
                   else:
-                    print("Label print", label)
+                    print("Label print", mask_present_label)
                   print("Mask")
                   boxColor = green
 
