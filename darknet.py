@@ -492,11 +492,17 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
                 if prediction == 0:
                   if label == True:
                     cv2.putText(image, "No Mask", (x,y - 10), font, font_scale, red, thickness)
+                    print("Label print", label)
+                  else:
+                    print("Label print", label)
                   print("No mask")
                   boxColor = red
                 elif prediction == 1:
                   if label == True:
                     cv2.putText(image, "Masked", (x,y - 10), font, font_scale, green, thickness)
+                    print("Label print", label)
+                  else:
+                    print("Label print", label)
                   print("Mask")
                   boxColor = green
 
