@@ -470,9 +470,9 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
                 #changed ###########################################
                 font_scale=0.25
                 thickness = 2
-                red = (0,0,255)
+                blue = (0,0,255)
                 green = (0,255,0)
-                blue = (255,0,0)
+                red = (255,0,0)
                 font=cv2.FONT_HERSHEY_SIMPLEX
 
                 x, y, w, h = xCoord, yCoord, int(bounds[2]), int(bounds[3])
