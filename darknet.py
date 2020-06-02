@@ -483,7 +483,7 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
                 img = pil_image.unsqueeze(0)
                             
                 print("accessing mask model")            
-                result = mask_model(img.cuda())
+                result = mask_model(img)
                 _, maximum = torch.max(result.data, 1)
                 prediction = maximum.item()
 
