@@ -462,7 +462,7 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
                 # y = shape[0]
                 # yExtent = int(y * bounds[3] / 100)
                 yExtent = int(bounds[3])
-                xExtent = int(bounds[2])
+                xEntent = int(bounds[2])
                 # Coordinates are around the center
                 xCoord = int(bounds[0] - bounds[2]/2)
                 yCoord = int(bounds[1] - bounds[3]/2)
