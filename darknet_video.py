@@ -84,7 +84,7 @@ def cvDrawBoxes(detections, img):
         
         '''if prediction == 0:
                   if mask_present_label == True:
-                    cv2.putText(image, "No Mask", (x,y - 10), font, font_scale, red, thickness)
+                    cv2.putText(img, "No Mask", (x,y - 10), font, font_scale, red, thickness)
                     print("Label print", mask_present_label)
                   else:
                     print("Label print", mask_present_label)
@@ -92,7 +92,7 @@ def cvDrawBoxes(detections, img):
             boxColor = red
         elif prediction == 1:
                   if mask_present_label == True:
-                    cv2.putText(image, "Masked", (x,y - 10), font, font_scale, green, thickness)
+                    cv2.putText(img, "Masked", (x,y - 10), font, font_scale, green, thickness)
                     print("Label print", mask_present_label)
                   else:
                     print("Label print", mask_present_label)
@@ -100,10 +100,10 @@ def cvDrawBoxes(detections, img):
                   boxColor = green'''
         
         if prediction == 0:
-            cv2.putText(image, "No Mask", (x,y - 10), font, font_scale, red, thickness)
+            cv2.putText(img, "No Mask", (x,y - 10), font, font_scale, red, thickness)
             boxColor = red
         elif prediction == 1:
-            cv2.putText(image, "Masked", (x,y - 10), font, font_scale, green, thickness)
+            cv2.putText(img, "Masked", (x,y - 10), font, font_scale, green, thickness)
             boxColor = green
         print("prediction : " + str(prediction))
         cv2.rectangle(img, pt1, pt2, boxColor, 1)
