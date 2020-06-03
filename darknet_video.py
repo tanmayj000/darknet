@@ -177,24 +177,29 @@ def YOLO(video_path = '/content/mask_footage.mp4', configPath = "cfg/custom-yolo
     darknet_image = darknet.make_image(darknet.network_width(netMain),
                                     darknet.network_height(netMain),3)
     while True:
-        prev_time = time.time()
-        ret, frame_read = cap.read()
-        frame_rgb = cv2.cvtColor(frame_read, cv2.COLOR_BGR2RGB)
-        frame_resized = cv2.resize(frame_rgb,
-                                   (darknet.network_width(netMain),
-                                    darknet.network_height(netMain)),
-                                   interpolation=cv2.INTER_LINEAR)
+        try:
+            prev_time = time.time()
+            ret, frame_read = cap.read()
+            frame_rgb = cv2.cvtColor(frame_read, cv2.COLOR_BGR2RGB)
+            frame_resized = cv2.resize(frame_rgb,
+                                       (darknet.network_width(netMain),
+                                        darknet.network_height(netMain)),
+                                       interpolation=cv2.INTER_LINEAR)
 
-        darknet.copy_image_from_bytes(darknet_image,frame_resized.tobytes())
-
-        detections = darknet.detect_image(netMain, metaMain, darknet_image, thresh=0.25)
-        image = cvDrawBoxes(detections, frame_resized)
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        out.write(image)
-        print(1/(time.time()-prev_time))
-        io.imshow(image)
-        io.show()
-        cv2.waitKey(3)
+            darknet.copy_image_from_bytes(darknet_image,frame_resized.tobytes())
+           
+        
+            detections = darknet.detect_image(netMain, metaMain, darknet_image, thresh=0.25)
+            image = cvDrawBoxes(detections, frame_resized)
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            out.write(image)
+            print(1/(time.time()-prev_time))
+            io.imshow(image)
+            io.show()
+            cv2.waitKey(3)
+        except:
+            break;
+      
     cap.release()
     out.release()
 
