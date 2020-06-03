@@ -69,7 +69,9 @@ def cvDrawBoxes(detections, img):
         
         ################################################################
         detect_mask_img = img
-        detect_mask_img = detect_mask_img[y:y+h, x:x+w]
+        
+        xi, yi, wi, hi = int(x), int(y), int(w), int(h)
+        detect_mask_img = detect_mask_img[yi:yi+hi, xi:xi+wi]
         pil_image = Image.fromarray(detect_mask_img, mode = "RGB")
         pil_image = train_transforms(pil_image)
         img_modif = pil_image.unsqueeze(0)
@@ -102,7 +104,7 @@ def cvDrawBoxes(detections, img):
         elif prediction == 1:
             cv2.putText(image, "Masked", (x,y - 10), font, font_scale, green, thickness)
             boxColor = green
-        
+        print("prediction : " + str(prediction))
         cv2.rectangle(img, pt1, pt2, boxColor, 1)
         '''cv2.putText(img,
                     detection[0].decode() +
