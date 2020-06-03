@@ -15,6 +15,23 @@ def convertBack(x, y, w, h):
     return xmin, ymin, xmax, ymax
 
 ################################################
+mask_model = models.resnet50(pretrained=True)
+mask_model.fc = torch.nn.Sequential(torch.nn.Linear(2048, 1024),
+                                 torch.nn.BatchNorm1d(1024),
+                                 torch.nn.ReLU(),
+                                 torch.nn.Dropout(0.2),
+                                 torch.nn.Linear(1024, 512),
+                                 torch.nn.BatchNorm1d(512),
+                                 torch.nn.Dropout(0.6),
+                                 torch.nn.Linear(512, 2),
+                                 torch.nn.LogSoftmax(dim=1))
+
+train_transforms = transforms.Compose([
+    transforms.Resize((256, 256)),
+    transforms.ToTensor(),
+    transforms.Normalize((0.5,0.5,0.5), (0.5,0.5,0.5))
+    ])
+
 def load_mask_wt(path = '/content/drive/My Drive/equalaf4.pth'):
     mask_model.load_state_dict(torch.load(path))
     
