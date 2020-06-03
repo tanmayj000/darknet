@@ -16,6 +16,7 @@ import torchvision.datasets as datasets
 from torch.utils.data import DataLoader
 import torch.utils.data as data
 import matplotlib.pyplot as plt
+from PIL import Image
 
 def convertBack(x, y, w, h):
     xmin = int(round(x - (w / 2)))
