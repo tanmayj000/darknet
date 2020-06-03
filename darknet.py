@@ -63,8 +63,7 @@ train_transforms = transforms.Compose([
     transforms.Normalize((0.5,0.5,0.5), (0.5,0.5,0.5))
     ])
 
-def load_mask_wt(path = '/content/drive/My Drive/equalaf4.pth'):
-    mask_model.load_state_dict(torch.load(path))
+
     
 def sample(probs):
     s = sum(probs)
@@ -348,6 +347,9 @@ netMain = None
 metaMain = None
 altNames = None
 
+def load_mask_wt(path = '/content/drive/My Drive/equalaf4.pth'):
+    mask_model.load_state_dict(torch.load(path))
+    
 def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yolov4.cfg", weightPath = "yolov4.weights", metaPath= "./cfg/coco.data", showImage= True, makeImageOnly = False, initOnly= False, mask_present_label = True, mask_path = '/content/drive/My Drive/equalaf4.pth'):
     """
     Convenience function to handle the detection and returns of objects.
