@@ -102,8 +102,8 @@ def cvDrawBoxes(detections, img):
                   boxColor = green'''
         
         if prediction == 0:
-            cv2.putText(img, "No Mask", (xi,yi - 10), font, font_scale, red, thickness)
-            boxColor = red
+            cv2.putText(img, "No Mask", (xi,yi - 10), font, font_scale, blue, thickness)
+            boxColor = blue
         elif prediction == 1:
             cv2.putText(img, "Mask", (xi,yi - 10), font, font_scale, green, thickness)
             boxColor = green
@@ -114,6 +114,7 @@ def cvDrawBoxes(detections, img):
                     " [" + str(round(detection[1] * 100, 2)) + "]",
                     (pt1[0], pt1[1] - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
                     [0, 255, 0], 2)'''
+        
         ################################################################
     return img
 
@@ -189,6 +190,7 @@ def YOLO(video_path = '/content/mask_footage.mp4', configPath = "cfg/custom-yolo
         detections = darknet.detect_image(netMain, metaMain, darknet_image, thresh=0.25)
         image = cvDrawBoxes(detections, frame_resized)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        out.write(image)
         print(1/(time.time()-prev_time))
         io.imshow(image)
         io.show()
