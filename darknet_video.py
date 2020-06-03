@@ -7,9 +7,6 @@ import numpy as np
 import time
 import darknet
 
-load_mask_wt('/content/drive/My Drive/equalaf4.pth')
-
-
 def convertBack(x, y, w, h):
     xmin = int(round(x - (w / 2)))
     xmax = int(round(x + (w / 2)))
@@ -18,6 +15,9 @@ def convertBack(x, y, w, h):
     return xmin, ymin, xmax, ymax
 
 ################################################
+def load_mask_wt(path = '/content/drive/My Drive/equalaf4.pth'):
+    mask_model.load_state_dict(torch.load(path))
+    
 font_scale = 0.35
 thickness = 1
 blue = (0,0,255)
@@ -27,6 +27,7 @@ font=cv2.FONT_HERSHEY_COMPLEX
 ################################################ 
 
 def cvDrawBoxes(detections, img):
+    load_mask_wt('/content/drive/My Drive/equalaf4.pth')
     mask_model.eval()
     for detection in detections:
         x, y, w, h = detection[2][0],\
