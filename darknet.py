@@ -608,6 +608,7 @@ def performBatchDetect(thresh= 0.25, configPath = "./cfg/yolov4.cfg", weightPath
     return batch_boxes, batch_scores, batch_classes    
 
 if __name__ == "__main__":
+    print(load_mask_wt(path = '/content/drive/My Drive/equalaf4.pth'))
     print(performDetect())
     #Uncomment the following line to see batch inference working 
     #print(performBatchDetect())
