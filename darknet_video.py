@@ -46,7 +46,7 @@ train_transforms = transforms.Compose([
 def load_mask_wt(path = '/content/drive/My Drive/equalaf4.pth'):
     mask_model.load_state_dict(torch.load(path))
     
-font_scale = 1
+font_scale = 0.35
 thickness = 1
 blue = (0,0,255)
 green = (0,255,0)
@@ -100,10 +100,10 @@ def cvDrawBoxes(detections, img):
                   boxColor = green'''
         
         if prediction == 0:
-            cv2.putText(img, "No Mask", (x,y - 10), font, font_scale, red, thickness)
+            cv2.putText(img, "No Mask", (xi,yi - 10), font, font_scale, red, thickness)
             boxColor = red
         elif prediction == 1:
-            cv2.putText(img, "Mask", (x,y - 10), font, font_scale, green, thickness)
+            cv2.putText(img, "Mask", (xi,yi - 10), font, font_scale, green, thickness)
             boxColor = green
         print("prediction : " + str(prediction))
         cv2.rectangle(img, pt1, pt2, boxColor, 1)
