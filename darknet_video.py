@@ -56,8 +56,8 @@ red = (255,0,0)
 font=cv2.FONT_HERSHEY_COMPLEX
 ################################################ 
 
-def cvDrawBoxes(detections, img):
-    load_mask_wt('/content/drive/My Drive/equalaf4.pth')
+def cvDrawBoxes(detections, img, mask_wt_path = "/content/drive/My Drive/equalaf4.pth"):
+    load_mask_wt(mask_wt_path)
     mask_model.eval()
     for detection in detections:
         x, y, w, h = detection[2][0],\
@@ -102,8 +102,8 @@ def cvDrawBoxes(detections, img):
                   boxColor = green'''
         
         if prediction == 0:
-            cv2.putText(img, "No Mask", (xi,yi - 10), font, font_scale, blue, thickness)
-            boxColor = blue
+            cv2.putText(img, "No Mask", (xi,yi - 10), font, font_scale, red, thickness)
+            boxColor = red
         elif prediction == 1:
             cv2.putText(img, "Mask", (xi,yi - 10), font, font_scale, green, thickness)
             boxColor = green
@@ -124,7 +124,7 @@ metaMain = None
 altNames = None
 
 
-def YOLO(video_path = '/content/mask_footage.mp4', configPath = "cfg/custom-yolov4-detector.cfg", weightPath = "/content/custom-yolov4-detector_best.weights", metaPath = "data/obj.data"):
+def YOLO(video_path = '/content/mask_footage.mp4', configPath = "cfg/custom-yolov4-detector.cfg", weightPath = "/content/custom-yolov4-detector_best.weights", metaPath = "data/obj.data", mask_wt_path = "/content/drive/My Drive/equalaf4.pth"):
 
     global metaMain, netMain, altNames
     '''configPath = "./cfg/yolov4.cfg"
@@ -190,7 +190,7 @@ def YOLO(video_path = '/content/mask_footage.mp4', configPath = "cfg/custom-yolo
            
         
             detections = darknet.detect_image(netMain, metaMain, darknet_image, thresh=0.25)
-            image = cvDrawBoxes(detections, frame_resized)
+            image = cvDrawBoxes(detections, frame_resized, mask_wt_path)
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             out.write(image)
             print(1/(time.time()-prev_time))
@@ -204,4 +204,4 @@ def YOLO(video_path = '/content/mask_footage.mp4', configPath = "cfg/custom-yolo
     out.release()
 
 if __name__ == "__main__":
-    YOLO(video_path = '/content/mask_footage.mp4', configPath = "cfg/custom-yolov4-detector.cfg", weightPath = "/content/custom-yolov4-detector_best.weights", metaPath = "data/obj.data")
+    YOLO(video_path = '/content/mask_footage.mp4', configPath = "cfg/custom-yolov4-detector.cfg", weightPath = "/content/custom-yolov4-detector_best.weights", metaPath = "data/obj.data", mask_wt_path = "/content/drive/My Drive/equalaf4.pth")
