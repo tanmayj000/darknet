@@ -84,7 +84,8 @@ def cvDrawBoxes(detections, img, mask_wt_path = "/content/drive/My Drive/equalaf
         result = mask_model(img_modif)
         _, maximum = torch.max(result.data, 1)
         prediction = maximum.item()
-        
+        io.imshow(img_modif)
+        io.show()
         '''if prediction == 0:
                   if mask_present_label == True:
                     cv2.putText(img, "No Mask", (x,y - 10), font, font_scale, red, thickness)
@@ -198,6 +199,7 @@ def YOLO(video_path = '/content/mask_footage.mp4', configPath = "cfg/custom-yolo
             io.imshow(image)
             io.show()
             cv2.waitKey(3)
+            break
         except:
             break;
       
