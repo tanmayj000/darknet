@@ -77,8 +77,8 @@ def cvDrawBoxes(detections, img, mask_wt_path = "/content/drive/My Drive/equalaf
         xi, yi, wi, hi = int(xCoord), int(yCoord), int(w), int(h)
         print(xi, yi, wi, hi)
         detect_mask_img = detect_mask_img[yi:yi+hi, xi:xi+wi]
-        io.imshow(detect_mask_img)
-        io.show()
+        #io.imshow(detect_mask_img)
+        #io.show()
         pil_image = Image.fromarray(detect_mask_img, mode = "RGB")
         pil_image = train_transforms(pil_image)
         img_modif = pil_image.unsqueeze(0)
@@ -87,8 +87,7 @@ def cvDrawBoxes(detections, img, mask_wt_path = "/content/drive/My Drive/equalaf
         result = mask_model(img_modif)
         _, maximum = torch.max(result.data, 1)
         prediction = maximum.item()
-        io.imshow(img_modif)
-        io.show()
+       
         '''if prediction == 0:
                   if mask_present_label == True:
                     cv2.putText(img, "No Mask", (x,y - 10), font, font_scale, red, thickness)
@@ -199,8 +198,8 @@ def YOLO(video_path = '/content/mask_footage.mp4', configPath = "cfg/custom-yolo
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             out.write(image)
             print(1/(time.time()-prev_time))
-            io.imshow(image)
-            io.show()
+            #io.imshow(image)
+            #io.show()
             cv2.waitKey(3)
         except:
             break;
