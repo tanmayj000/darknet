@@ -74,6 +74,7 @@ def cvDrawBoxes(detections, img, mask_wt_path = "/content/drive/My Drive/equalaf
         detect_mask_img = img
         
         xi, yi, wi, hi = int(x), int(y), int(w), int(h)
+        print(xi, yi, wi, hi)
         detect_mask_img = detect_mask_img[yi:yi+hi, xi:xi+wi]
         pil_image = Image.fromarray(detect_mask_img, mode = "RGB")
         pil_image = train_transforms(pil_image)
