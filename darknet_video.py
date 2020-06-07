@@ -128,7 +128,7 @@ metaMain = None
 altNames = None
 
 
-def YOLO(video_path = '/content/mask_footage.mp4', configPath = "cfg/custom-yolov4-detector.cfg", weightPath = "/content/custom-yolov4-detector_best.weights", metaPath = "data/obj.data", mask_wt_path = "/content/drive/My Drive/equalaf4.pth"):
+def YOLO(video_path = '/content/mask_footage.mp4', configPath = "cfg/custom-yolov4-detector.cfg", weightPath = "/content/custom-yolov4-detector_best.weights", metaPath = "data/obj.data", mask_wt_path = "/content/drive/My Drive/equalaf4.pth", fps = 30.0):
 
     global metaMain, netMain, altNames
     '''configPath = "./cfg/yolov4.cfg"
@@ -173,7 +173,7 @@ def YOLO(video_path = '/content/mask_footage.mp4', configPath = "cfg/custom-yolo
     cap.set(3, 1280)
     cap.set(4, 720)
     out = cv2.VideoWriter(
-        "output.avi", cv2.VideoWriter_fourcc(*"MJPG"), 24.0,
+        "output.avi", cv2.VideoWriter_fourcc(*"MJPG"), fps,
         (darknet.network_width(netMain), darknet.network_height(netMain)))
     print("Starting the YOLO loop...")
 
