@@ -321,8 +321,8 @@ def check(p1, p2):
     x1, y1 = p1[0], p1[1]
     x2, y2 = p2[0], p2[1]
     coords = [(x1, y1), (x2, y2)]
-
-    social_distance = distance.cdist(coords, coords, 'euclidean')
+       
+    social_distance = distance.euclidean([x1, y1], [x2, y2])
     param = (x1+x2)/2
 
     if(social_distance > 0 and social_distance < 0.25 * param):
@@ -493,23 +493,27 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
             #wrong_peeps = []
             sd_main = []
             for mid1 in face_mids:
+                truth = False
                 for mid2 in face_mids:
                     sd = check(mid1, mid2)
-                    sd_main.append(sd)
+                    if(sd == True)
+                        truth = True
+                        break
+                sd_main.append(truth)
 
             i = 0
             for coord in xywh:
                 x, y, w, h = coord
-                for mid2 in face_mids:
-                    if (sd_main[i] == True):
-                        print("SD")
-                        cv2.rectangle(image, (x, y), (x + w, y + h + 50), (0, 0, 150), 2)
-                        cv2.putText(image, "SD", (x,y - 10), font, font_scale, (0, 0, 150), thickness)
-                        break
-                    else:  
-                        print("NO SD")
-                        cv2.rectangle(image, (x, y), (x + w, y + h + 50), (0, 150, 150), 2)
-                        cv2.putText(image, "No SD", (x,y - 10), font, font_scale, (0, 150, 150), thickness)
+            
+                if (sd_main[i] == True):
+                    print("SD")
+                    cv2.rectangle(image, (x, y), (x + w, y + h + 50), (0, 0, 150), 2)
+                    cv2.putText(image, "SD", (x,y - 10), font, font_scale, (0, 0, 150), thickness)
+                    
+                 else:  
+                    print("NO SD")
+                    cv2.rectangle(image, (x, y), (x + w, y + h + 50), (0, 150, 150), 2)
+                    cv2.putText(image, "No SD", (x,y - 10), font, font_scale, (0, 150, 150), thickness)
                     i+=1
 
 
