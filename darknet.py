@@ -320,10 +320,9 @@ altNames = None
 def check(p1, p2):
     x1, y1 = p1[0], p1[1]
     x2, y2 = p2[0], p2[1]
-    x = [x1, x2]
-    y = [y1, y2]
+    coords = [(x1, y1), (x2, y2)]
 
-    social_distance = distance.cdist(x, y, 'euclidean')
+    social_distance = distance.cdist(coords, coords, 'euclidean')
     param = (x1+x2)/2
 
     if(social_distance > 0 and social_distance < 0.25 * param):
