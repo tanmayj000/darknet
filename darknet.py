@@ -494,13 +494,19 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
             #correct_peeps = []
             #wrong_peeps = []
             sd_main = []
+            i=0
+            j=0
             for mid1 in face_mids:
                 truth = True
+                j=0
                 for mid2 in face_mids:
                     sd = check(mid1, mid2)
+                    print(i, " -> ", j," = ", sd)
                     if(sd == False):
                         truth = False
                         break
+                    j+=1
+                i+=1
                 sd_main.append(truth)
 
             i = 0
@@ -515,7 +521,7 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
                     print("NO SD")
                     cv2.rectangle(image, (x, y), (x + w, y + h + 50), (0, 150, 150), 2)
                     cv2.putText(image, "No SD", (x,y - 10), font, font_scale, (0, 150, 150), thickness)
-                    i+=1
+                i+=1
 
 
             if not makeImageOnly:
