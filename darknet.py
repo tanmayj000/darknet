@@ -423,7 +423,7 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
 
     detections = detect(netMain, metaMain, imagePath.encode("ascii"), thresh)
     if showImage:
-        try:            
+        #try:            
             image = io.imread(imagePath)
             print("*** "+str(len(detections))+" Results, color coded by confidence ***")
             imcaption = []
@@ -480,7 +480,7 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
                 elif (label=='No_mask'):
                     boxColor = red
                     cv2.putText(image, "No Mask", (x,y - 10), font, font_scale, red, thickness)
-
+                
                 #boxColor = (int(255 * (1 - (confidence ** 2))), int(255 * (confidence ** 2)), 0)
                 draw.set_color(image, (rr, cc), boxColor, alpha= 0.8)
                 draw.set_color(image, (rr2, cc2), boxColor, alpha= 0.8)
@@ -501,14 +501,16 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
             i = 0
             for coord in xywh:
                 x, y, w, h = coord
-
-                if (sd_main[i] == True):  
-                    cv2.rectangle(image, (x, y), (x + w, y + h + 50), (0, 0, 150), 2)
-                    cv2.putText(image, "SD", (x,y - 10), font, font_scale, (0, 0, 150), thickness)
-                else:  
-                    cv2.rectangle(image, (x, y), (x + w, y + h + 50), (0, 150, 150), 2)
-                    cv2.putText(image, "No SD", (x,y - 10), font, font_scale, (0, 150, 150), thickness)
-                i+=1
+                for mid2 in face_mids:
+                    if (sd_main[i] == True):
+                        print("SD")
+                        cv2.rectangle(image, (x, y), (x + w, y + h + 50), (0, 0, 150), 2)
+                        cv2.putText(image, "SD", (x,y - 10), font, font_scale, (0, 0, 150), thickness)
+                    else:  
+                        print("NO SD")
+                        cv2.rectangle(image, (x, y), (x + w, y + h + 50), (0, 150, 150), 2)
+                        cv2.putText(image, "No SD", (x,y - 10), font, font_scale, (0, 150, 150), thickness)
+                    i+=1
 
 
             if not makeImageOnly:
@@ -519,8 +521,8 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
                 "image": image,
                 "caption": "\n<br/>".join(imcaption)
             }
-        except Exception as e:
-            print("Unable to show image: "+str(e))
+        #except Exception as e:
+            #print("Unable to show image: "+str(e))
     return detections
 
 def performBatchDetect(thresh= 0.25, configPath = "./cfg/yolov4.cfg", weightPath = "yolov4.weights", metaPath= "./cfg/coco.data", hier_thresh=.5, nms=.45, batch_size=3):
