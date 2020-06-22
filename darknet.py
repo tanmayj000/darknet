@@ -320,6 +320,8 @@ altNames = None
 def check(p1, p2):
     x1, y1 = p1[0], p1[1]
     x2, y2 = p2[0], p2[1]
+    if(x1==x2 and y1==y2)
+        return True
     coords = [(x1, y1), (x2, y2)]
        
     social_distance = distance.euclidean([x1, y1], [x2, y2])
@@ -493,7 +495,7 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
             #wrong_peeps = []
             sd_main = []
             for mid1 in face_mids:
-                truth = False
+                truth = True
                 for mid2 in face_mids:
                     sd = check(mid1, mid2)
                     if(sd == False):
