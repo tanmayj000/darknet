@@ -496,8 +496,8 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
                 truth = False
                 for mid2 in face_mids:
                     sd = check(mid1, mid2)
-                    if(sd == True)
-                        truth = True
+                    if(sd == False):
+                        truth = False
                         break
                 sd_main.append(truth)
 
@@ -509,8 +509,7 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
                     print("SD")
                     cv2.rectangle(image, (x, y), (x + w, y + h + 50), (0, 0, 150), 2)
                     cv2.putText(image, "SD", (x,y - 10), font, font_scale, (0, 0, 150), thickness)
-                    
-                 else:  
+                else:  
                     print("NO SD")
                     cv2.rectangle(image, (x, y), (x + w, y + h + 50), (0, 150, 150), 2)
                     cv2.putText(image, "No SD", (x,y - 10), font, font_scale, (0, 150, 150), thickness)
