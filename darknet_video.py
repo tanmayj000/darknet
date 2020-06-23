@@ -138,7 +138,7 @@ metaMain = None
 altNames = None
 
 
-def YOLO():
+def YOLO(video_path = '/content/mask_footage.mp4', configPath = "cfg/custom-yolov4-detector.cfg", weightPath = "/content/custom-yolov4-detector_best.weights", metaPath = "data/obj.data"):
 
     global metaMain, netMain, altNames
     configPath = "./cfg/yolov4.cfg"
@@ -179,11 +179,11 @@ def YOLO():
         except Exception:
             pass
     #cap = cv2.VideoCapture(0)
-    cap = cv2.VideoCapture("test.mp4")
+    cap = cv2.VideoCapture(video_path)
     cap.set(3, 1280)
     cap.set(4, 720)
     out = cv2.VideoWriter(
-        "output.avi", cv2.VideoWriter_fourcc(*"MJPG"), 10.0,
+        "output.avi", cv2.VideoWriter_fourcc(*"MJPG"), 30.0,
         (darknet.network_width(netMain), darknet.network_height(netMain)))
     print("Starting the YOLO loop...")
 
@@ -211,4 +211,4 @@ def YOLO():
     out.release()
 
 if __name__ == "__main__":
-    YOLO()
+    YOLO(video_path = '/content/mask_footage.mp4', configPath = "cfg/custom-yolov4-detector.cfg", weightPath = "/content/custom-yolov4-detector_best.weights", metaPath = "data/obj.data")
