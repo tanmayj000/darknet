@@ -35,7 +35,7 @@ import numpy as np
 from skimage import io, draw
 import cv2
 from scipy.spatial import distance
-google.colab.patches import cv2_imshow
+from google.colab.patches import cv2_imshow
 
 
 def sample(probs):
