@@ -464,7 +464,9 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
             xywh = []
             wp = []
             hp = []
+            i=0
             for detection in detections:
+                
                 label = detection[0]
                 confidence = detection[1]
                 pstring = label+": "+str(np.rint(100 * confidence))+"%"
@@ -491,9 +493,11 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
                 face_mids.append(mid_coord)
                 
                 if (label=='Person'):
+                    print(i)
                     xywh.append(coord)
                     wp.append(w)
                     hp.append(h)
+                    i+=1
                 
                 boundingBox = [
                     [xCoord, yCoord],
@@ -526,6 +530,8 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
                     feet_coord = (x_pmid, y_pmid)
                     person_feet.append(feet_coord)
                     
+                
+                    
             
                 
                 #boxColor = (int(255 * (1 - (confidence ** 2))), int(255 * (confidence ** 2)), 0)
@@ -556,12 +562,12 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
                 
                 if (sd_main[i] == True):
                     print("SD")
-                    cv2.rectangle(image, (x, y), (x + w, y + h), (0, 0, 150), 2)
-                    cv2.putText(image, "SD", (x,y - 10), font, font_scale, (0, 0, 150), thickness)
+                    cv2.rectangle(image, (x, y), (x + w, y + h), (150, 150, 0), 2)
+                    cv2.putText(image, str(i)+" SD", (x,y - 10), font, font_scale, (0, 0, 150), thickness)
                 else:  
                     print("NO SD")
-                    cv2.rectangle(image, (x, y), (x + w, y + h), (150, 150, 0), 2)
-                    cv2.putText(image, "No SD", (x,y - 10), font, font_scale, (150, 150, 0), thickness)
+                    cv2.rectangle(image, (x, y), (x + w, y + h), (0, 0, 150), 2)
+                    cv2.putText(image, str(i)+" No SD", (x,y - 10), font, font_scale, (150, 150, 0), thickness)
                 i+=1
 
             '''draw.set_color(image, (rr, cc), boxColor, alpha= 0.8)
