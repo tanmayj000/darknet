@@ -563,11 +563,11 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
                 if (sd_main[i] == True):
                     print("SD")
                     cv2.rectangle(image, (x, y), (x + w, y + h), (150, 150, 0), 2)
-                    cv2.putText(image, str(i)+" SD", (x,y - 10), font, font_scale, (0, 0, 150), thickness)
+                    cv2.putText(image, str(i)+" SD", (x,y - 10), font, font_scale, (150, 150, 0), thickness)
                 else:  
                     print("NO SD")
                     cv2.rectangle(image, (x, y), (x + w, y + h), (0, 0, 150), 2)
-                    cv2.putText(image, str(i)+" No SD", (x,y - 10), font, font_scale, (150, 150, 0), thickness)
+                    cv2.putText(image, str(i)+" No SD", (x,y - 10), font, font_scale, (0, 0, 150), thickness)
                 i+=1
 
             '''draw.set_color(image, (rr, cc), boxColor, alpha= 0.8)
