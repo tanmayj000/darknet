@@ -431,6 +431,7 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
             print("*** "+str(len(detections))+" Results, color coded by confidence ***")
             imcaption = []
             face_mids = []
+            person_feet = []
             xywh = []
             for detection in detections:
                 label = detection[0]
@@ -483,13 +484,15 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
                 elif (label=='No_mask'):
                     boxColor = red
                     cv2.putText(image, "No Mask", (x,y - 10), font, font_scale, red, thickness)
+                elif (label=='Person'):
+                    x_pmid = x + w/2
+                    y_pmid = y + h
+                    feet_coord = (x_pmid, y_pmid)
+                    person_feet.append(feet_coord)
+                    
+            
                 
                 #boxColor = (int(255 * (1 - (confidence ** 2))), int(255 * (confidence ** 2)), 0)
-                draw.set_color(image, (rr, cc), boxColor, alpha= 0.8)
-                draw.set_color(image, (rr2, cc2), boxColor, alpha= 0.8)
-                draw.set_color(image, (rr3, cc3), boxColor, alpha= 0.8)
-                draw.set_color(image, (rr4, cc4), boxColor, alpha= 0.8)
-                draw.set_color(image, (rr5, cc5), boxColor, alpha= 0.8)
 
 
             
@@ -498,10 +501,10 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
             sd_main = []
             i=0
             j=0
-            for mid1 in face_mids:
+            for mid1 in person_feet:
                 truth = True
                 j=0
-                for mid2 in face_mids:
+                for mid2 in person_feet:
                     sd = check(mid1, mid2)
                     print(i, " -> ", j," = ", sd)
                     if(sd == False):
@@ -517,14 +520,19 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
             
                 if (sd_main[i] == True):
                     print("SD")
-                    cv2.rectangle(image, (x, y), (x + w, y + h + 50), (0, 0, 150), 2)
+                    cv2.rectangle(image, (x, y), (x + w, y + h), (0, 0, 150), 2)
                     cv2.putText(image, "SD", (x,y - 10), font, font_scale, (0, 0, 150), thickness)
                 else:  
                     print("NO SD")
-                    cv2.rectangle(image, (x, y), (x + w, y + h + 50), (0, 150, 150), 2)
-                    cv2.putText(image, "No SD", (x,y - 10), font, font_scale, (0, 150, 150), thickness)
+                    cv2.rectangle(image, (x, y), (x + w, y + h), (150, 150, 0), 2)
+                    cv2.putText(image, "No SD", (x,y - 10), font, font_scale, (150, 150, 0), thickness)
                 i+=1
 
+            '''draw.set_color(image, (rr, cc), boxColor, alpha= 0.8)
+            draw.set_color(image, (rr2, cc2), boxColor, alpha= 0.8)
+            draw.set_color(image, (rr3, cc3), boxColor, alpha= 0.8)
+            draw.set_color(image, (rr4, cc4), boxColor, alpha= 0.8)
+            draw.set_color(image, (rr5, cc5), boxColor, alpha= 0.8)'''
 
             if not makeImageOnly:
                 io.imshow(image)
@@ -533,6 +541,8 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
                 cv2_imshow(image)
                 
                 io.show()
+                
+                
             detections = {
                 "detections": detections,
                 "image": image,
