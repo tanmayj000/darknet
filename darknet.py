@@ -458,7 +458,10 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
                 x_mid, y_mid = bounds[0], bounds[1]
                 mid_coord = (x_mid, y_mid)
                 face_mids.append(mid_coord)
-                xywh.append(coord)
+                
+                if (label=='Person'):
+                    xywh.append(coord)
+                
                 boundingBox = [
                     [xCoord, yCoord],
                     [xCoord, yCoord + yExtent],
