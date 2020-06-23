@@ -6,19 +6,6 @@ import cv2
 import numpy as np
 import time
 import darknet
-import torch
-import torch.nn.functional as F
-import torch.nn as nn
-import torch.optim as optim
-import torchvision.models as models
-import torchvision.transforms as transforms
-import torchvision.datasets as datasets
-from torch.utils.data import DataLoader
-import torch.utils.data as data
-import matplotlib.pyplot as plt
-from PIL import Image
-from skimage import io, draw
-
 
 def convertBack(x, y, w, h):
     xmin = int(round(x - (w / 2)))
@@ -27,38 +14,48 @@ def convertBack(x, y, w, h):
     ymax = int(round(y + (h / 2)))
     return xmin, ymin, xmax, ymax
 
-################################################
-mask_model = models.resnet50(pretrained=True)
-mask_model.fc = torch.nn.Sequential(torch.nn.Linear(2048, 1024),
-                                 torch.nn.BatchNorm1d(1024),
-                                 torch.nn.ReLU(),
-                                 torch.nn.Dropout(0.2),
-                                 torch.nn.Linear(1024, 512),
-                                 torch.nn.BatchNorm1d(512),
-                                 torch.nn.Dropout(0.6),
-                                 torch.nn.Linear(512, 2),
-                                 torch.nn.LogSoftmax(dim=1))
-
-train_transforms = transforms.Compose([
-    transforms.Resize((256, 256)),
-    transforms.ToTensor(),
-    transforms.Normalize((0.5,0.5,0.5), (0.5,0.5,0.5))
-    ])
-
-def load_mask_wt(path = '/content/drive/My Drive/equalaf4.pth'):
-    mask_model.load_state_dict(torch.load(path))
+import math
+def check(p1, p2, w1, w2, h1, h2):
+    x1, y1 = p1[0], p1[1]
+    x2, y2 = p2[0], p2[1]
+    if(x1==x2 and y1==y2):
+        return True
+    coords = [(x1, y1), (x2, y2)]
+       
+    ed = distance.euclidean([x1, y1], [x2, y2])
+    print(ed)
     
-font_scale = 0.35
-thickness = 1
-blue = (0,0,255)
-green = (0,255,0)
-red = (255,0,0)
-font=cv2.FONT_HERSHEY_COMPLEX
-################################################ 
+    x_dist = abs(x1-x2)
+    y_dist = abs(y1-y2)
+    theta = math.atan(y_dist / x_dist)
+    
+    sd1 = h1 / 1.6 * math.cos(theta)
+    sd2 = h2 / 1.6 * math.cos(theta)
+    
+    if (ed > 0 and (sd1 + sd2) > ed):
+        return False
+    
+    return True
+    '''param = (x1+x2)/2
+    if(social_distance > 0 and social_distance < 0.25 * param):
+        return False
+    
+    return True'''
 
-def cvDrawBoxes(detections, img, mask_wt_path = "/content/drive/My Drive/equalaf4.pth"):
-    load_mask_wt(mask_wt_path)
-    mask_model.eval()
+def cvDrawBoxes(detections, img):
+    face_mids = []
+    person_feet = []
+    xywh = []
+    wp = []
+    hp = []
+    i=0
+    font_scale = 0.35
+    thickness = 1
+    blue = (0,0,255)
+    green = (0,255,0)
+    red = (255,0,0)
+    font=cv2.FONT_HERSHEY_COMPLEX
+    
     for detection in detections:
         x, y, w, h = detection[2][0],\
             detection[2][1],\
@@ -67,59 +64,72 @@ def cvDrawBoxes(detections, img, mask_wt_path = "/content/drive/My Drive/equalaf
         xmin, ymin, xmax, ymax = convertBack(
             float(x), float(y), float(w), float(h))
         
+        coord = [x, y, w, h]
+        
+        if (label=='Person'):
+            print(i)
+            xywh.append(coord)
+            wp.append(w)
+            hp.append(h)
+            i+=1
+               
+        if (label=='Mask'):
+            boxColor = green
+            cv2.putText(img, "Mask", (x,y - 10), font, font_scale, green, thickness)
+        elif (label=='No_mask'):
+            boxColor = red
+            cv2.putText(img, "No Mask", (x,y - 10), font, font_scale, red, thickness)
+        elif (label=='Person'):
+            x_pmid = x + w/2
+            y_pmid = y + h
+            feet_coord = (x_pmid, y_pmid)
+            person_feet.append(feet_coord)
+            
+    sd_main = []
+    i=0
+    j=0
+    for mid1 in person_feet:
+        truth = True
+        j=0
+        for mid2 in person_feet:
+            sd = check(mid1, mid2, wp[i], wp[j], hp[i], hp[j])
+            print(i, " -> ", j," = ", sd)
+            if(sd == False):
+                truth = False
+                break
+            j+=1
+        i+=1
+        sd_main.append(truth)
+            
         pt1 = (xmin, ymin)
         pt2 = (xmax, ymax)
         
-        ################################################################
-        detect_mask_img = img
-        xCoord = int(x - w/2)
-        yCoord = int(y - h/2)
-        xi, yi, wi, hi = int(xCoord), int(yCoord), int(w), int(h)
-        print(xi, yi, wi, hi)
-        detect_mask_img = detect_mask_img[yi:yi+hi, xi:xi+wi]
-        #io.imshow(detect_mask_img)
-        #io.show()
-        pil_image = Image.fromarray(detect_mask_img, mode = "RGB")
-        pil_image = train_transforms(pil_image)
-        img_modif = pil_image.unsqueeze(0)
-                            
-        print("accessing mask model")            
-        result = mask_model(img_modif)
-        _, maximum = torch.max(result.data, 1)
-        prediction = maximum.item()
-       
-        '''if prediction == 0:
-                  if mask_present_label == True:
-                    cv2.putText(img, "No Mask", (x,y - 10), font, font_scale, red, thickness)
-                    print("Label print", mask_present_label)
-                  else:
-                    print("Label print", mask_present_label)
-                  print("No mask")
-            boxColor = red
-        elif prediction == 1:
-                  if mask_present_label == True:
-                    cv2.putText(img, "Mask", (x,y - 10), font, font_scale, green, thickness)
-                    print("Label print", mask_present_label)
-                  else:
-                    print("Label print", mask_present_label)
-                  print("Mask")
-                  boxColor = green'''
+    i=0
+    for coord in xywh:
+        x, y, w, h = coord
+        x = int(x)
+        y = int(y)
+        w = int(w)
+        h = int(h)
         
-        if prediction == 0:
-            cv2.putText(img, "No Mask", (xi,yi - 10), font, font_scale, red, thickness)
-            boxColor = red
-        elif prediction == 1:
-            cv2.putText(img, "Mask", (xi,yi - 10), font, font_scale, green, thickness)
-            boxColor = green
-        print("prediction : " + str(prediction))
-        cv2.rectangle(img, pt1, pt2, boxColor, 1)
-        '''cv2.putText(img,
+        if (sd_main[i] == True):
+            print("SD")
+            cv2.rectangle(img, (x, y), (x + w, y + h), (150, 150, 0), 2)
+            cv2.putText(img, str(i)+" SD", (x,y - 10), font, font_scale, (150, 150, 0), thickness)
+        else:  
+            print("NO SD")
+            cv2.rectangle(img, (x, y), (x + w, y + h), (0, 0, 150), 2)
+            cv2.putText(img, str(i)+" No SD", (x,y - 10), font, font_scale, (0, 0, 150), thickness)
+        i+=1
+                
+                
+                
+        '''cv2.rectangle(img, pt1, pt2, (0, 255, 0), 1)
+        cv2.putText(img,
                     detection[0].decode() +
                     " [" + str(round(detection[1] * 100, 2)) + "]",
                     (pt1[0], pt1[1] - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
                     [0, 255, 0], 2)'''
-        
-        ################################################################
     return img
 
 
@@ -128,12 +138,12 @@ metaMain = None
 altNames = None
 
 
-def YOLO(video_path = '/content/mask_footage.mp4', configPath = "cfg/custom-yolov4-detector.cfg", weightPath = "/content/custom-yolov4-detector_best.weights", metaPath = "data/obj.data", mask_wt_path = "/content/drive/My Drive/equalaf4.pth", fps = 30.0):
+def YOLO():
 
     global metaMain, netMain, altNames
-    '''configPath = "./cfg/yolov4.cfg"
+    configPath = "./cfg/yolov4.cfg"
     weightPath = "./yolov4.weights"
-    metaPath = "./cfg/coco.data"'''
+    metaPath = "./cfg/coco.data"
     if not os.path.exists(configPath):
         raise ValueError("Invalid config path `" +
                          os.path.abspath(configPath)+"`")
@@ -169,11 +179,11 @@ def YOLO(video_path = '/content/mask_footage.mp4', configPath = "cfg/custom-yolo
         except Exception:
             pass
     #cap = cv2.VideoCapture(0)
-    cap = cv2.VideoCapture(video_path)
+    cap = cv2.VideoCapture("test.mp4")
     cap.set(3, 1280)
     cap.set(4, 720)
     out = cv2.VideoWriter(
-        "output.avi", cv2.VideoWriter_fourcc(*"MJPG"), fps,
+        "output.avi", cv2.VideoWriter_fourcc(*"MJPG"), 10.0,
         (darknet.network_width(netMain), darknet.network_height(netMain)))
     print("Starting the YOLO loop...")
 
@@ -181,31 +191,24 @@ def YOLO(video_path = '/content/mask_footage.mp4', configPath = "cfg/custom-yolo
     darknet_image = darknet.make_image(darknet.network_width(netMain),
                                     darknet.network_height(netMain),3)
     while True:
-        try:
-            prev_time = time.time()
-            ret, frame_read = cap.read()
-            frame_rgb = cv2.cvtColor(frame_read, cv2.COLOR_BGR2RGB)
-            frame_resized = cv2.resize(frame_rgb,
-                                       (darknet.network_width(netMain),
-                                        darknet.network_height(netMain)),
-                                       interpolation=cv2.INTER_LINEAR)
+        prev_time = time.time()
+        ret, frame_read = cap.read()
+        frame_rgb = cv2.cvtColor(frame_read, cv2.COLOR_BGR2RGB)
+        frame_resized = cv2.resize(frame_rgb,
+                                   (darknet.network_width(netMain),
+                                    darknet.network_height(netMain)),
+                                   interpolation=cv2.INTER_LINEAR)
 
-            darknet.copy_image_from_bytes(darknet_image,frame_resized.tobytes())
-           
-        
-            detections = darknet.detect_image(netMain, metaMain, darknet_image, thresh=0.25)
-            image = cvDrawBoxes(detections, frame_resized, mask_wt_path)
-            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            out.write(image)
-            print(1/(time.time()-prev_time))
-            #io.imshow(image)
-            #io.show()
-            cv2.waitKey(3)
-        except:
-            break;
-      
+        darknet.copy_image_from_bytes(darknet_image,frame_resized.tobytes())
+
+        detections = darknet.detect_image(netMain, metaMain, darknet_image, thresh=0.25)
+        image = cvDrawBoxes(detections, frame_resized)
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        print(1/(time.time()-prev_time))
+        cv2.imshow('Demo', image)
+        cv2.waitKey(3)
     cap.release()
     out.release()
 
 if __name__ == "__main__":
-    YOLO(video_path = '/content/mask_footage.mp4', configPath = "cfg/custom-yolov4-detector.cfg", weightPath = "/content/custom-yolov4-detector_best.weights", metaPath = "data/obj.data", mask_wt_path = "/content/drive/My Drive/equalaf4.pth")
+    YOLO()
