@@ -35,6 +35,7 @@ import numpy as np
 from skimage import io, draw
 import cv2
 from scipy.spatial import distance
+google.colab.patches import cv2_imshow
 
 
 def sample(probs):
@@ -527,6 +528,10 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
 
             if not makeImageOnly:
                 io.imshow(image)
+                
+                cv2.imwrite('result.jpg', image)
+                cv2_imshow(image)
+                
                 io.show()
             detections = {
                 "detections": detections,
