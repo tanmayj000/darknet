@@ -318,7 +318,7 @@ netMain = None
 metaMain = None
 altNames = None
 
-def check(p1, p2):
+'''def check(p1, p2):
     x1, y1 = p1[0], p1[1]
     x2, y2 = p2[0], p2[1]
     if(x1==x2 and y1==y2):
@@ -332,8 +332,37 @@ def check(p1, p2):
     if(social_distance > 0 and social_distance < 0.25 * param):
         return False
     
-    return True
+    return True'''
 
+import math
+def check(p1, p2, w1, w2, h1, h2):
+    x1, y1 = p1[0], p1[1]
+    x2, y2 = p2[0], p2[1]
+    if(x1==x2 and y1==y2):
+        return True
+    coords = [(x1, y1), (x2, y2)]
+       
+    ed = distance.euclidean([x1, y1], [x2, y2])
+    print(ed)
+    
+    x_dist = abs(x1-x2)
+    y_dist = abs(y1-y2)
+    theta = math.atan(y_dist / x_dist)
+    
+    sd1 = h1 / 1.6 * math.cos(theta)
+    sd2 = h2 / 1.6 * math.cos(theta)
+    
+    if (ed > 0 and (sd1 + sd2) > ed):
+        return False
+    
+    return True
+    '''param = (x1+x2)/2
+
+    if(social_distance > 0 and social_distance < 0.25 * param):
+        return False
+    
+    return True'''
+    
 
 def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yolov4.cfg", weightPath = "yolov4.weights", metaPath= "./cfg/coco.data", showImage= True, makeImageOnly = False, initOnly= False):
     """
@@ -433,6 +462,8 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
             face_mids = []
             person_feet = []
             xywh = []
+            wp = []
+            hp = []
             for detection in detections:
                 label = detection[0]
                 confidence = detection[1]
@@ -461,6 +492,8 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
                 
                 if (label=='Person'):
                     xywh.append(coord)
+                    wp.append(w)
+                    hp.append(h)
                 
                 boundingBox = [
                     [xCoord, yCoord],
@@ -508,7 +541,7 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
                 truth = True
                 j=0
                 for mid2 in person_feet:
-                    sd = check(mid1, mid2)
+                    sd = check(mid1, mid2, wp[i], wp[j], hp[i], hp[j])
                     print(i, " -> ", j," = ", sd)
                     if(sd == False):
                         truth = False
@@ -520,7 +553,7 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
             i = 0
             for coord in xywh:
                 x, y, w, h = coord
-            
+                
                 if (sd_main[i] == True):
                     print("SD")
                     cv2.rectangle(image, (x, y), (x + w, y + h), (0, 0, 150), 2)
