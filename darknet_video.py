@@ -182,6 +182,7 @@ def YOLO(video_path = '/content/mask_footage.mp4', configPath = "cfg/custom-yolo
     cap = cv2.VideoCapture(video_path)
     cap.set(3, 1280)
     cap.set(4, 720)
+    fps = 30.0
     out = cv2.VideoWriter(
         "output.avi", cv2.VideoWriter_fourcc(*"MJPG"), fps,
         (darknet.network_width(netMain), darknet.network_height(netMain)))
