@@ -205,12 +205,12 @@ def YOLO(video_path = '/content/mask_footage.mp4', configPath = "cfg/custom-yolo
            
         
             detections = darknet.detect_image(netMain, metaMain, darknet_image, thresh=0.25)
-            image = cvDrawBoxes(detections, frame_resized, mask_wt_path)
+            image = cvDrawBoxes(detections, frame_resized)
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             out.write(image)
             print(1/(time.time()-prev_time))
-            #io.imshow(image)
-            #io.show()
+            io.imshow(image)
+            io.show()
             cv2.waitKey(3)
         #except:
             #break;
