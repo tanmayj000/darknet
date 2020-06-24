@@ -112,10 +112,11 @@ def cvDrawBoxes(detections, img):
     i=0
     for coord in xywh:
         x, y, w, h = coord
-        x = int(x)
-        y = int(y)
+        x = int(x - w/2)
+        y = int(y - h/2)
         w = int(w)
         h = int(h)
+        
         
         if (sd_main[i] == True):
             print("SD")
@@ -197,7 +198,7 @@ def YOLO(video_path = '/content/mask_footage.mp4', configPath = "cfg/custom-yolo
     darknet_image = darknet.make_image(darknet.network_width(netMain),
                                     darknet.network_height(netMain),3)
     while True:
-        #try:
+        try:
             prev_time = time.time()
             ret, frame_read = cap.read()
             frame_rgb = cv2.cvtColor(frame_read, cv2.COLOR_BGR2RGB)
@@ -217,8 +218,8 @@ def YOLO(video_path = '/content/mask_footage.mp4', configPath = "cfg/custom-yolo
             io.imshow(image)
             io.show()
             cv2.waitKey(3)
-        #except:
-            #break;
+        except:
+            break;
       
     cap.release()
     out.release()
