@@ -141,7 +141,9 @@ altNames = None
 def YOLO(video_path = '/content/mask_footage.mp4', configPath = "cfg/custom-yolov4-detector.cfg", weightPath = "/content/custom-yolov4-detector_best.weights", metaPath = "data/obj.data"):
 
     global metaMain, netMain, altNames
-
+    '''configPath = "./cfg/yolov4.cfg"
+    weightPath = "./yolov4.weights"
+    metaPath = "./cfg/coco.data"'''
     if not os.path.exists(configPath):
         raise ValueError("Invalid config path `" +
                          os.path.abspath(configPath)+"`")
@@ -181,7 +183,7 @@ def YOLO(video_path = '/content/mask_footage.mp4', configPath = "cfg/custom-yolo
     cap.set(3, 1280)
     cap.set(4, 720)
     out = cv2.VideoWriter(
-        "output.avi", cv2.VideoWriter_fourcc(*"MJPG"), 30.0,
+        "output.avi", cv2.VideoWriter_fourcc(*"MJPG"), fps,
         (darknet.network_width(netMain), darknet.network_height(netMain)))
     print("Starting the YOLO loop...")
 
@@ -189,24 +191,31 @@ def YOLO(video_path = '/content/mask_footage.mp4', configPath = "cfg/custom-yolo
     darknet_image = darknet.make_image(darknet.network_width(netMain),
                                     darknet.network_height(netMain),3)
     while True:
-        prev_time = time.time()
-        ret, frame_read = cap.read()
-        frame_rgb = cv2.cvtColor(frame_read, cv2.COLOR_BGR2RGB)
-        frame_resized = cv2.resize(frame_rgb,
-                                   (darknet.network_width(netMain),
-                                    darknet.network_height(netMain)),
-                                   interpolation=cv2.INTER_LINEAR)
+        try:
+            prev_time = time.time()
+            ret, frame_read = cap.read()
+            frame_rgb = cv2.cvtColor(frame_read, cv2.COLOR_BGR2RGB)
+            frame_resized = cv2.resize(frame_rgb,
+                                       (darknet.network_width(netMain),
+                                        darknet.network_height(netMain)),
+                                       interpolation=cv2.INTER_LINEAR)
 
-        darknet.copy_image_from_bytes(darknet_image,frame_resized.tobytes())
-
-        detections = darknet.detect_image(netMain, metaMain, darknet_image, thresh=0.25)
-        image = cvDrawBoxes(detections, frame_resized)
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        print(1/(time.time()-prev_time))
-        cv2.imshow('Demo', image)
-        cv2.waitKey(3)
+            darknet.copy_image_from_bytes(darknet_image,frame_resized.tobytes())
+           
+        
+            detections = darknet.detect_image(netMain, metaMain, darknet_image, thresh=0.25)
+            image = cvDrawBoxes(detections, frame_resized, mask_wt_path)
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            out.write(image)
+            print(1/(time.time()-prev_time))
+            #io.imshow(image)
+            #io.show()
+            cv2.waitKey(3)
+        except:
+            break;
+      
     cap.release()
     out.release()
-
+    
 if __name__ == "__main__":
     YOLO(video_path = '/content/mask_footage.mp4', configPath = "cfg/custom-yolov4-detector.cfg", weightPath = "/content/custom-yolov4-detector_best.weights", metaPath = "data/obj.data")
