@@ -68,7 +68,7 @@ def cvDrawBoxes(detections, img):
         xmin, ymin, xmax, ymax = convertBack(
             float(x), float(y), float(w), float(h))
         
-        coord = [x, y, w, h]
+        coord = [x-w/2, y-h/2, w, h]
         label = detection[0].decode()
         
         if (label=='Person'):
@@ -85,8 +85,8 @@ def cvDrawBoxes(detections, img):
             boxColor = red
             cv2.putText(img, "No Mask", (x,y - 10), font, font_scale, red, thickness)
         elif (label=='Person'):
-            x_pmid = x + w/2
-            y_pmid = y + h
+            x_pmid = x 
+            y_pmid = y + h/2
             feet_coord = (x_pmid, y_pmid)
             person_feet.append(feet_coord)
             
@@ -112,8 +112,8 @@ def cvDrawBoxes(detections, img):
     i=0
     for coord in xywh:
         x, y, w, h = coord
-        x = int(x - w/2)
-        y = int(y - h/2)
+        x = int(x)
+        y = int(y)
         w = int(w)
         h = int(h)
         
